@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* -------------------------
+   THEME MAPPINGS (Shadcn)
+-------------------------- */
+@theme inline {
+  /* Backgrounds */
+  --color-background: var(--background);
+  --color-secondary-background: var(--secondary-background);
+  --color-muted: var(--muted);
+
+  /* Text */
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+
+  /* Card */
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  /* Border / Inputs */
+  --color-border: var(--border);
+  --color-input: var(--input);
+
+  /* Primary */
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  /* Secondary */
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  /* Accent */
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  /* States */
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+
+  /* Utility */
+  --color-ring: var(--ring);
+
+  /* Sidebar */
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+
+  /* Charts */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* Popover */
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  /* Radii */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Fonts */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* -------------------------
+   ROOT COLORS (LIGHT MODE)
+-------------------------- */
+:root {
+  /* Background Colors */
+  --background: #ffffff;
+  --secondary-background: #FFFAF5;
+  --muted: #E2E7EF;
+
+  /* Text Colors */
+  --foreground: #22272d;
+  --muted-foreground: #74777f;
+
+  /* Card */
+  --card: #F0F4F9;
+  --card-foreground: #212529;
+
+  /* Borders / Inputs */
+  --border: #dee2e6;
+  --input: #dee2e6;
+
+  /* Primary */
+  --primary: #FFFAF5;
+  --primary-foreground: #212529;
+
+  /* Secondary */
+  --secondary: #E1E8EE;
+  --secondary-foreground: #ffffff;
+
+  /* Accent */
+  --accent: #007bff;
+  --accent-foreground: #ffffff;
+
+  /* States */
+  --destructive: #dc3545;
+  --destructive-foreground: #ffffff;
+  --warning: #ffc107;
+  --warning-foreground: #212529;
+  --success: #28a745;
+  --success-foreground: #ffffff;
+
+  /* Utility */
+  --ring: #007bff;
+
+  /* Radii */
+  --radius: 0.5rem;
+}
+
+/* -------------------------
+   BASE STYLES
+-------------------------- */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* -------------------------
+   UTILITIES
+-------------------------- */
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* -------------------------
+   SCROLLBAR
+-------------------------- */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb:hover,
+*::-webkit-scrollbar-thumb:active {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+*::-webkit-scrollbar-track:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* -------------------------
+   QURAN / ARABIC TEXT
+-------------------------- */
+.font-arabic {
+  font-family: 'Amiri', 'Scheherazade New', 'Traditional Arabic', 'Al Bayan', serif;
+}
+.direction-rtl {
+  direction: rtl;
+  text-align: right;
+}

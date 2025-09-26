@@ -22,3 +22,13 @@ export function SurahCard({ data, isSelected = false }: { data: Surah, isSelecte
         </CardContent>
     )
 }
+
+export function SurahCardListMode({data, isSelected = false, onClick}: {data: Surah, isSelected?: boolean, onClick: () => void}) {
+    return (
+        <div className={`flex gap-2 w-full hover:bg-muted hover:text-primary-foreground rounded-lg p-2 text-muted-foreground ${isSelected && 'bg-muted text-muted-foreground font-semibold text-primary-foreground'}`} onClick={onClick}>
+            <span className="text-sm w-5">{data.revelation_order}</span>
+            <span className="text-sm flex-1">{data.name_simple}</span>
+            <span className="text-sm">{data.name_arabic}</span>
+        </div>
+    )
+}
