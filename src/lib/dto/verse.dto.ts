@@ -4,6 +4,7 @@ import { Verse } from '@/types/verse.type';
 export interface GetVersesByChapterParamsDto {
   chapter_id: number;
   words?: boolean;
+  word_fields?: string;
   fields?: string;
   per_page?: number;
   page?: number;

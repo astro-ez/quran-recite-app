@@ -2,17 +2,17 @@
 
 import { useMemo, useEffect } from "react";
 import { GetVersesByChapterResponseDto } from "@/lib/dto/verse.dto";
-import { Word, Verse } from "@/types/verse.type";
 import { useQuranReading } from "@/context/quran-reading.context";
+import { SurahAudio } from "@/types/recite.type";
 
-interface VerseWithHighlight extends Verse {
-  isHighlighted: boolean;
-  words: (Word & { isHighlighted: boolean })[];
-}
+// interface VerseWithHighlight extends Verse {
+//   isHighlighted: boolean;
+//   words: (Word & { isHighlighted: boolean })[];
+// }
 
 interface UseVerseHighlightingProps {
   data: { pages: GetVersesByChapterResponseDto[] } | undefined;
-  surahTimeStamps: any;
+  surahTimeStamps: SurahAudio | null;
   reciteAudioTime: number | null;
   isLoading: boolean;
 }
@@ -89,7 +89,7 @@ export function useVerseHighlighting({
       // scroll to highlighted verse
       smoothScrollToVerse(selectedVerse.verse_number);
     }
-  }, [versesWithHighlighting, surahTimeStamps, reciteAudioTime, isLoading, data]);
+  }, [versesWithHighlighting, surahTimeStamps, reciteAudioTime]);
 
   return {
     versesWithHighlighting,

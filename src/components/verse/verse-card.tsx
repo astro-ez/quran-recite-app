@@ -4,11 +4,14 @@ import { Button } from "@/components/ui/button"
 import { Bookmark, Play, MoreHorizontal, Book } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Verse, Word } from "@/types/verse.type"
+import React from "react"
 
 interface VerseSentenceProps {
   sentence: string;
   className?: string;
 }
+
+type WordHighlight = Word & { isHighlighted?: boolean };
 
 function VerseSentence({ sentence, className = "" }: VerseSentenceProps) {
   return (
@@ -25,9 +28,24 @@ function VerseSentence({ sentence, className = "" }: VerseSentenceProps) {
   );
 }
 
+function VerseWord({ word, variant }: { word: WordHighlight, variant: "arabic_main" | "translation" }) {
+  const variantClasses = {
+    "arabic_main": "font-arabic",
+    "translation": "text-base leading-relaxed text-foreground font-medium"
+  }[variant];
+
+  const text = variant === "arabic_main" ? word.text_uthmani : word.translation.text;
+
+  return (
+    <span className={cn(variantClasses, word.isHighlighted && "bg-yellow-200")}>
+      {text}
+    </span>
+  );
+}
+
 interface VerseRecitation extends Verse {
   isHighlighted?: boolean;
-  words: (Word & { isHighlighted?: boolean })[]
+  words: WordHighlight[]
 }
 
 export interface VerseCardProps {
@@ -37,7 +55,8 @@ export interface VerseCardProps {
   className?: string
   onPlay?: () => void
   onBookmark?: () => void
-  isBookmarked?: boolean
+  isBookmarked?: boolean,
+  ref: React.Ref<HTMLDivElement>
 }
 
 export function VerseCard({
@@ -47,9 +66,10 @@ export function VerseCard({
   onPlay,
   onBookmark,
   isBookmarked = false,
+  ref
 }: VerseCardProps) {
   return (
-    <div className={cn("w-full p-5", verse.isHighlighted && "border-2 border-border", className)}>
+    <div ref={ref} className={cn("w-full p-5", verse.isHighlighted && "ring-1 ring-foreground rounded-lg", className)}>
         {/* Main Content Row */}
         <div className="flex gap-4">
           {/* Left sidebar - Action buttons */}
@@ -102,7 +122,20 @@ export function VerseCard({
           <div className="flex-1 min-w-0 flex flex-col justify-center ">
 
             {/* Arabic Text */}
-            <VerseSentence sentence={verse.text_uthmani_tajweed} />
+            {/* <VerseSentence sentence={verse.text_uthmani} /> */}
+            <div
+              className="text-right direction-rtl leading-relaxed mb-4 line-height-loose tajweed-text tajeweed font-arabic text-3xl"
+            >
+            {verse.words.map((word, index) => (
+              <React.Fragment key={word.id}>
+              <VerseWord 
+                word={word} 
+                variant="arabic_main" 
+              />
+              {index < verse.words.length - 1 ? " " : ""}
+              </React.Fragment>
+            ))}
+            </div>
 
             {/* Translation Text (in translation mode) */}
             {mode === "translation" && verse.words && (

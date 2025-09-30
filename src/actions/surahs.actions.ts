@@ -1,13 +1,10 @@
-import { Surah } from "@/entities/surah";
 import { api } from "@/lib/api/api";
 import { endpoints } from "@/lib/api/endpoints";
+import { GetChaptersParams, GetChaptersResponse } from "@/lib/dto/surah.dto";
 
-type GetChaptersResponse = {
-    chapters: Surah[];
-}
 
-export async function getChapters() {
-    const response = await api.get<GetChaptersResponse>(endpoints.surahs.list);
+export async function getChapters(params?: GetChaptersParams) {
+    const response = await api.get<GetChaptersResponse>(endpoints.surahs.list, { params });
 
     return response.data;
 }

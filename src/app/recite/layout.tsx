@@ -9,7 +9,7 @@ export default async function ReciteQuranLayout({ children }: {children: React.R
 
     return (
         <ReciteProvider> 
-            <QuranReadingProvider>
+            <QuranReadingProvider defaultSurahId={chapters?.[0]?.id}>
                 <div className="bg-secondary w-full h-full p-3 md:p-5">
                     <div className="flex flex-col lg:flex-row w-full max-w-7xl gap-3 md:gap-5 mx-auto h-full">
                         <div className="w-fit">

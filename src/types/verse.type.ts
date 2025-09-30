@@ -7,6 +7,7 @@ export type Verse = {
     verse_key: string;
     verse_index: number;
     text_uthmani_tajweed: string;
+    text_uthmani: string;
     juz_number: number;
     words: Word[];
 }
@@ -16,6 +17,8 @@ export type Word = {
     position: number;
     audio_url: string;
     char_type_name: string;
+    text_uthmani_tajweed: string;
+    text_uthmani: string;
     translation: {
         text: string;
         language_name: string;

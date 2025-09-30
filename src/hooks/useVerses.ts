@@ -14,7 +14,8 @@ export const useVerses = (
     
   const defaultParams: GetVersesByChapterParamsDto = {
     words: true,
-    fields: "text_uthmani_tajweed",
+    fields: "text_uthmani_tajweed,text_uthmani",
+    word_fields: "text_uthmani_tajweed, text_uthmani",
     ...params,
   };
 
@@ -36,7 +37,6 @@ export const useVerses = (
     queryKey: ["verses", params.chapter_id, defaultParams],
     queryFn: ({pageParam}: {pageParam: number | unknown}) => fetchVerses({pageParam: pageParam as number || 1}),
     getNextPageParam: (lastPage) => {
-        console.log(lastPage);
         return lastPage.pagination.next_page ? lastPage.pagination.next_page : undefined;
     },
     initialPageParam: 1,

@@ -4,32 +4,25 @@ import { SurahAudio } from "@/types/recite.type";
 import React from "react";
 
 interface ReciteState {
-    reciteMode: "verse" | "word";
     reciteAudioTime: number | null; // in milliseconds
     surahTimeStamps: SurahAudio | null;
+    rangeAudioTime?: { start: number; end: number } | null; // in milliseconds
 }
 
 interface ReciteContextValue {
     state: ReciteState;
-    setReciteMode: (mode: ReciteState['reciteMode']) => void;
     setReciteAudioTime: (time: ReciteState['reciteAudioTime']) => void;
     setSurahTimeStamps: (timestamps: ReciteState['surahTimeStamps']) => void;
+    setStartEndAudioTime: (range: ReciteState['rangeAudioTime']) => void;
 }
 
 const ReciteContext = React.createContext<ReciteContextValue | undefined>(undefined);
 
 export function ReciteProvider({ children }: { children: React.ReactNode }) {
     const [state, setState] = React.useState<ReciteState>({
-        reciteMode: "verse",
         reciteAudioTime: null,
         surahTimeStamps: null,
     });
-    const setReciteMode = (mode: ReciteState['reciteMode']) => {
-        setState(prev => ({
-            ...prev,
-            reciteMode: mode,
-        }));
-    }
     const setReciteAudioTime = (time: ReciteState['reciteAudioTime']) => {
         setState(prev => ({
             ...prev,
@@ -42,8 +35,17 @@ export function ReciteProvider({ children }: { children: React.ReactNode }) {
             surahTimeStamps: timestamps,
         }));
     }
+
+    const setStartEndAudioTime = (range: ReciteState['rangeAudioTime']) => {
+        setState(prev => ({
+            ...prev,
+            rangeAudioTime: range,
+        }));
+    }
+
+
     return (
-        <ReciteContext.Provider value={{ state, setReciteMode, setReciteAudioTime, setSurahTimeStamps }}>
+        <ReciteContext.Provider value={{ state, setReciteAudioTime, setSurahTimeStamps, setStartEndAudioTime }}>
             {children}
         </ReciteContext.Provider>
     );

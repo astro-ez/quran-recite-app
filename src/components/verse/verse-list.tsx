@@ -3,23 +3,21 @@
 import { VerseCard, VerseCardSkeleton } from "@/components/verse/verse-card";
 import { useVerses } from "@/hooks/useVerses";
 import { useVerseHighlighting } from "@/hooks/useVerseHighlighting";
-import { Separator } from "@radix-ui/react-separator";
 import { useInView } from 'react-intersection-observer';
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useQuranReading } from "@/context/quran-reading.context";
 import { useReciteContext } from "@/context/recite.context";
 import { cn } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
 
 export function VerseList() {
   const { 
-    selectedSurahId, 
-    selectedVerseNumber, 
-    jumpToVerseId,
+    state: { selectedSurahId, selectedVerseNumber },
     registerVerseRef,
     smoothScrollToVerse,
   } = useQuranReading();
 
-  const { state: { surahTimeStamps, reciteAudioTime } } = useReciteContext();
+  const { state: { surahTimeStamps, reciteAudioTime }, setStartEndAudioTime } = useReciteContext();
   const { ref: refBottom, inView: inViewBottom } = useInView();
 
   const { 
@@ -30,7 +28,7 @@ export function VerseList() {
     fetchNextPage, 
     isFetchingNextPage 
   } = useVerses({ 
-    chapter_id: selectedSurahId,
+    chapter_id: selectedSurahId!,
   });
 
   const { versesWithHighlighting } = useVerseHighlighting({
@@ -40,23 +38,24 @@ export function VerseList() {
     isLoading
   });
 
+  const handlePlayVerseSegment = useCallback((verse_number: number) => {
+
+    const verseKey = versesWithHighlighting.flat().find(v => v.verse_number === verse_number)?.verse_key;
+
+    if (!verseKey || !surahTimeStamps) return;
+
+    const verseTimestamps = surahTimeStamps?.timestamps.find(v => v.verse_key === verseKey);
+
+    setStartEndAudioTime(verseTimestamps ? { start: verseTimestamps.timestamp_from , end: verseTimestamps.timestamp_to } : null);
+    smoothScrollToVerse(verse_number);
+
+  }, [surahTimeStamps, setStartEndAudioTime, versesWithHighlighting]);
+
   useEffect(() => {
     if (inViewBottom && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
   }, [inViewBottom, hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-  useEffect(() => {
-    if (jumpToVerseId) {
-      // Small delay to ensure the element is rendered
-      console.log(jumpToVerseId)
-      const time = setTimeout(() => {
-        smoothScrollToVerse(jumpToVerseId);
-      }, 100);
-
-      return () => clearTimeout(time);
-    }
-  }, [jumpToVerseId, smoothScrollToVerse]);
 
   if (isLoading) {
     return <VerseListSkeleton />;
@@ -79,30 +78,29 @@ export function VerseList() {
         <div className="space-y-6">
           {versesWithHighlighting.map((page, pageIndex) => (
             <React.Fragment key={pageIndex}>
-              {page?.map((verse) => (
+              {page?.map((verse, verseIndex) => (
                 <React.Fragment key={verse.id}>
-                  <div
-                    ref={(el) => registerVerseRef(verse.verse_number, el)}
-                    className={cn(
-                      "transition-all duration-300 rounded-lg",
-                      (selectedVerseNumber === verse.verse_number || verse.isHighlighted) && "bg-secondary/50 ring-2"
-                    )}
-                  >
                     <VerseCard 
+                      ref={el => registerVerseRef(verse.verse_number, el)}
                       verse={verse}
                       isSelected={selectedVerseNumber === verse.verse_number}
+                      onPlay={() => {
+                        handlePlayVerseSegment(verse.verse_number);
+                      }}
                       className={cn(
                         "w-full transition-all duration-200",
-                        verse.isHighlighted && "border-primary/30"
                       )}
                     />
-                  </div>
-                  <Separator className="my-4 bg-border/50" />
+                    {(pageIndex < (data?.pages?.length ?? 0) - 1 || verseIndex < page.length - 1) && (
+                      <Separator className="bg-border mt-4" />
+                    )}
+
                 </React.Fragment>
               ))}
               
-              <div className="flex justify-center py-3">
-                <div className="bg-muted px-3 py-1 rounded-full">
+              <div className="relative flex justify-center pb-3">
+                <Separator className="bg-border mt-4" />
+                <div className="absolute bg-muted px-3 py-1 rounded-full">
                   <span className="text-xs font-medium text-muted-foreground">
                     Page {pageIndex + 1}
                     {data?.pages[pageIndex]?.pagination?.total_pages && 
@@ -118,7 +116,6 @@ export function VerseList() {
           {isFetchingNextPage && (
             <div className="space-y-4">
               <VerseCardSkeleton />
-              <VerseCardSkeleton />
             </div>
           )}
           
@@ -127,7 +124,7 @@ export function VerseList() {
           
           {/* End of content indicator */}
           {data && !hasNextPage && (
-            <div className="flex justify-center py-8">
+            <div className="flex justify-center pb-8">
               <div className="text-sm text-muted-foreground">
                 End of Surah
               </div>

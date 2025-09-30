@@ -1,12 +1,13 @@
 "use client"
 
 import { Surah } from '@/entities/surah';
+import { Verse } from '@/types/verse.type';
 import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
 
 // Types for the Quran reading state
 interface QuranReadingState {
-  selectedSurahId: Surah['id'];
-  selectedVerseNumber: number | null;
+  selectedSurahId: Surah['id'] | null;
+  selectedVerseNumber: Verse['id'] | null;
   isAutoScroll: boolean;
   scrollToVerseId: number | null;
   jumpToVerseId: number | null;
@@ -14,12 +15,8 @@ interface QuranReadingState {
 
 interface QuranReadingContextValue {
   // Current state
-  selectedSurahId: Surah['id'];
-  selectedVerseNumber: number | null;
-  isAutoScroll: boolean;
-  scrollToVerseId: number | null;
-  jumpToVerseId: number | null;
-  
+  state: QuranReadingState;
+
   // Actions
   setSelectedSurah: (surahId: Surah['id']) => void;
   setSelectedVerse: (verseNumber: number) => void;
@@ -40,13 +37,13 @@ const QuranReadingContext = createContext<QuranReadingContextValue | undefined>(
 
 export function QuranReadingProvider({ 
   children,
-  defaultSurahId = 1 
+  defaultSurahId
 }: { 
   children: React.ReactNode;
   defaultSurahId?: number;
 }) {
   const [state, setState] = useState<QuranReadingState>({
-    selectedSurahId: defaultSurahId,
+    selectedSurahId: defaultSurahId || null,
     selectedVerseNumber: null,
     isAutoScroll: false,
     scrollToVerseId: null,
@@ -63,7 +60,7 @@ export function QuranReadingProvider({
     } else {
       verseRefs.current.delete(verseNumber);
     }
-  }, []);
+  }, [state]);
 
   // Function to smooth scroll to a specific verse
   const smoothScrollToVerse = useCallback((verseNumber: number) => {
@@ -76,7 +73,7 @@ export function QuranReadingProvider({
         inline: 'nearest'
       });
     }
-  }, []);
+  }, [state]);
 
   // Action: Set selected surah
   const setSelectedSurah = useCallback((surahId: Surah['id']) => {
@@ -89,7 +86,7 @@ export function QuranReadingProvider({
     }));
     // Clear verse refs when changing surah
     verseRefs.current.clear();
-  }, []);
+  }, [state]);
 
   // Action: Set selected verse within current surah
   const setSelectedVerse = useCallback((verseNumber: number) => {
@@ -97,7 +94,7 @@ export function QuranReadingProvider({
       ...prev,
       selectedVerseNumber: verseNumber,
     }));
-  }, []);
+  }, [state]);
 
   // Action: Jump to specific verse (can change both surah and verse)
   const jumpToVerse = useCallback((surahId: Surah['id'], verseNumber: number) => {
@@ -108,7 +105,7 @@ export function QuranReadingProvider({
       scrollToVerseId: verseNumber, // Trigger scroll
       jumpToVerseId: verseNumber,  // Trigger data refresh if needed
     }));
-  }, []);
+  }, [state]);
 
   // Action: Clear selected verse
   const clearSelectedVerse = useCallback(() => {
@@ -118,7 +115,7 @@ export function QuranReadingProvider({
       scrollToVerseId: null,
       jumpToVerseId: null,
     }));
-  }, []);
+  }, [state]);
 
   // Action: Enable/disable auto-scroll
   const setAutoScroll = useCallback((enabled: boolean) => {
@@ -126,7 +123,7 @@ export function QuranReadingProvider({
       ...prev,
       isAutoScroll: enabled,
     }));
-  }, []);
+  }, [state]);
 
   // Utility: Get verse key (e.g., "1:1", "2:255")
   const getVerseKey = useCallback((verseNumber: number) => {
@@ -140,11 +137,7 @@ export function QuranReadingProvider({
 
   const contextValue: QuranReadingContextValue = {
     // Current state
-    selectedSurahId: state.selectedSurahId,
-    selectedVerseNumber: state.selectedVerseNumber,
-    isAutoScroll: state.isAutoScroll,
-    scrollToVerseId: state.scrollToVerseId,
-    jumpToVerseId: state.jumpToVerseId,
+    state,
     
     // Actions
     setSelectedSurah,
@@ -179,8 +172,3 @@ export function useQuranReading() {
   
   return context;
 }
-
-// Backwards compatibility - keep the old name temporarily
-export const useRecitation = useQuranReading;
-export const RecitationProvider = QuranReadingProvider;
-export const useRecitationContext = () => ({ state: { surah: useQuranReading().selectedSurahId } });

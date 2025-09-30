@@ -1,51 +1,75 @@
+"use client";
+
 import { useEffect, useRef } from "react";
 
 interface AudioTrackerProps {
   url: string;
   onTimeUpdate: (time: number) => void;
   className?: string;
+  startTimestamp?: number; // in milliseconds
+  endTimestamp?: number;   // in milliseconds
+  intervalMs?: number;     // custom interval for updates
 }
 
-export default function AudioTracker({ url, onTimeUpdate, className }: AudioTrackerProps) {
+export default function AudioTracker({
+  url,
+  onTimeUpdate,
+  className,
+  startTimestamp,
+  endTimestamp,
+  intervalMs = 100, // default: 100ms
+}: AudioTrackerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const rafRef = useRef<number | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const updateTime = () => {
-    if (audioRef.current) {
-      onTimeUpdate(audioRef.current.currentTime * 1000);
-    //   rafRef.current = requestAnimationFrame(updateTime);
+  useEffect(() => {
+    if (!audioRef.current) return;
+
+    // Clear any old intervals
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
     }
-  };
 
-//   const handlePlay = () => {
-//     rafRef.current = requestAnimationFrame(updateTime);
-//   };
+    // Start custom update loop
+    intervalRef.current = setInterval(() => {
+      if (audioRef.current && !audioRef.current.paused) {
+        onTimeUpdate(audioRef.current.currentTime * 1000);
+      }
+    }, intervalMs);
 
-//   const handlePause = () => {
-//     if (rafRef.current) cancelAnimationFrame(rafRef.current);
-//   };
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [intervalMs, onTimeUpdate]);
 
-//   const handleEnded = () => {
-//     if (rafRef.current) cancelAnimationFrame(rafRef.current);
-//     onTimeUpdate(0); // reset
-//   };
+  useEffect(() => {
+    if (startTimestamp == null || endTimestamp == null || !audioRef.current) return;
 
-//   useEffect(() => {
-//     return () => {
-//       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-//     };
-//   }, []);
+    audioRef.current.currentTime = startTimestamp / 1000;
+    audioRef.current.play();
+
+    const handlePauseOnEnd = () => {
+      if (audioRef.current && audioRef.current.currentTime >= endTimestamp / 1000) {
+        audioRef.current.pause();
+      }
+    };
+
+    audioRef.current.addEventListener("timeupdate", handlePauseOnEnd);
+
+    return () => {
+      audioRef.current?.removeEventListener("timeupdate", handlePauseOnEnd);
+    };
+  }, [startTimestamp, endTimestamp]);
 
   return (
     <audio
       className={className}
       ref={audioRef}
       src={url}
-    //   onPlay={handlePlay}
-    //   onPause={handlePause}
-    //   onEnded={handleEnded}
-        onTimeUpdate={updateTime}
       controls
     />
   );
 }
+

@@ -36,6 +36,7 @@ export async function GET(request: NextRequest) {
     const params: GetVersesByChapterParamsDto = {
       chapter_id: chapterIdNum,
       words: searchParams.get('words') === 'true',
+      word_fields: searchParams.get('word_fields') || undefined,
       fields: searchParams.get('fields') || undefined,
       per_page: searchParams.get('per_page') ? parseInt(searchParams.get('per_page')!) : undefined,
       page: searchParams.get('page') ? parseInt(searchParams.get('page')!) : undefined,

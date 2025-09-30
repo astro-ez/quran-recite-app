@@ -11,10 +11,9 @@ import { cn } from "@/lib/utils";
 export function ReciteSidebar({ chapters: data } : { chapters: Surah[]}) {
 
     const { 
-        selectedSurahId, 
-        selectedVerseNumber,
+        state: { selectedSurahId },
         setSelectedSurah,
-        jumpToVerse,
+        smoothScrollToVerse,
         isVerseSelected 
     } = useQuranReading();
 
@@ -28,7 +27,7 @@ export function ReciteSidebar({ chapters: data } : { chapters: Surah[]}) {
 
     return (
         <aside 
-            className="relative flex flex-col bg-secondary-background h-[80%] rounded-xl p-4 justify-between w-full max-w-xs overflow-hidden"
+            className="relative flex flex-col bg-secondary-background h-[80%] rounded-xl p-4 justify-between w-full max-w-md overflow-hidden"
             role="complementary"
             aria-label="Recitation navigation sidebar"
         >
@@ -77,7 +76,7 @@ export function ReciteSidebar({ chapters: data } : { chapters: Surah[]}) {
                                         "text-muted-foreground bg-transparent hover:bg-muted hover:text-foreground transition-colors duration-200 h-8 min-w-[2.5rem] text-sm font-medium",
                                         isVerseSelected(verse) && "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
                                     )}
-                                    onClick={() => jumpToVerse(selectedSurahId, verse)}
+                                    onClick={() => smoothScrollToVerse(verse)}
                                     aria-label={`Jump to verse ${verse}`}
                                 >
                                     {verse}
