@@ -9,6 +9,7 @@ permissions:
 
 jobs:
     build-image:
+        environment: production
         name: Build Image
         runs-on: ubuntu-latest
         steps:
@@ -32,6 +33,11 @@ jobs:
                 context: .
                 platforms: linux/amd64
                 push: ${{github.event_name != 'pull_request'}}
+                build-args: |
+                  NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}
+                  NEXT_PUBLIC_AUTH_API_URL=${{ vars.NEXT_PUBLIC_AUTH_API_URL }}
+                  NEXT_CLIENT_ID=${{ secrets.NEXT_CLIENT_ID }}
+                  NEXT_CLIENT_SECRET=${{ secrets.NEXT_CLIENT_SECRET }}
                 tags:  "quran-recite-app:3000/name/app:1.0.0"
                 cache-from: type=gha
                 cache-to: type=gha, mode=max
