@@ -24,3 +24,5 @@ export default async function ReciteQuranLayout({ children }: {children: React.R
         </ReciteProvider>
     )
 }
+
+export const dynamic = 'force-dynamic';

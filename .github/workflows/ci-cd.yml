@@ -16,6 +16,21 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v2
 
+            - name: Docker meta
+              id: meta
+              uses: docker/metadata-action@v3
+              with:
+                images: |
+                    ghcr.io/astro-ez/quran-recite-app
+                tags: |
+                    type=schedule
+                    type=ref,event=branch
+                    type=ref,event=pr
+                    type=semver,pattern={{version}}
+                    type=semver,pattern={{major}}.{{minor}}
+                    type=semver,pattern={{major}}
+                    type=sha
+
             - name: Set up Docker buildx
               uses: docker/setup-buildx-action@v1
             
@@ -33,12 +48,8 @@ jobs:
                 context: .
                 platforms: linux/amd64
                 push: ${{github.event_name != 'pull_request'}}
-                build-args: |
-                  NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL }}
-                  NEXT_PUBLIC_AUTH_API_URL=${{ vars.NEXT_PUBLIC_AUTH_API_URL }}
-                  NEXT_CLIENT_ID=${{ secrets.NEXT_CLIENT_ID }}
-                  NEXT_CLIENT_SECRET=${{ secrets.NEXT_CLIENT_SECRET }}
-                tags:  "quran-recite-app:3000/name/app:1.0.0"
+                tags: ${{ steps.meta.outputs.tags }}
+                labels: ${{ steps.meta.outputs.labels }}
                 cache-from: type=gha
                 cache-to: type=gha, mode=max
               
