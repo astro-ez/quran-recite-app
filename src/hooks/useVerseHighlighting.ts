@@ -3,7 +3,7 @@
 import { useMemo, useEffect } from "react";
 import { GetVersesByChapterResponseDto } from "@/lib/dto/verse.dto";
 import { useQuranReading } from "@/context/quran-reading.context";
-import { SurahAudio } from "@/types/recite.type";
+import { SurahAudio, VerseTimestamp, WordTimestamp } from "@/types/recite.type";
 
 // interface VerseWithHighlight extends Verse {
 //   isHighlighted: boolean;
@@ -60,7 +60,7 @@ export function useVerseHighlighting({
 
     // Find current verse based on audio time
     const currentVerseIndex = surahTimeStamps.timestamps.findIndex(
-      (verse: any) => reciteAudioTime >= verse.timestamp_from && reciteAudioTime <= verse.timestamp_to
+      (verse: VerseTimestamp) => reciteAudioTime >= verse.timestamp_from && reciteAudioTime <= verse.timestamp_to
     );
 
     if (currentVerseIndex === -1 || !perPage) return;
@@ -75,7 +75,7 @@ export function useVerseHighlighting({
 
       // Highlight current word
       const words = surahTimeStamps.timestamps[currentVerseIndex].segments;
-      const currentWord = words.find((w: any) => 
+      const currentWord = words.find((w: WordTimestamp) => 
         reciteAudioTime >= w[1] && reciteAudioTime <= w[2]
       );
 
