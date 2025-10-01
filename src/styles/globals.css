@@ -145,7 +145,6 @@
 -------------------------- */
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
-    display: none;
   }
   .no-scrollbar {
     -ms-overflow-style: none;
@@ -156,7 +155,7 @@
 /* -------------------------
    SCROLLBAR
 -------------------------- */
-*::-webkit-scrollbar {
+/* *::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
@@ -174,7 +173,7 @@
 }
 *::-webkit-scrollbar-track:hover {
   background: rgba(0, 0, 0, 0.1);
-}
+} */
 
 /* -------------------------
    QURAN / ARABIC TEXT

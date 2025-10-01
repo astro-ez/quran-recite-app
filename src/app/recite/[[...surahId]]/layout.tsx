@@ -3,13 +3,15 @@ import { ReciteSidebar } from "@/components/recite/sidebar";
 import { QuranReadingProvider } from "@/context/quran-reading.context";
 import { ReciteProvider } from "@/context/recite.context";
 
-export default async function ReciteQuranLayout({ children }: {children: React.ReactNode}) {
+export default async function ReciteQuranLayout({ children, params}: {children: React.ReactNode, params: {surahId?: string}}) {
+
+    const { surahId } = params;
 
     const { chapters } = await getChapters();
 
     return (
         <ReciteProvider> 
-            <QuranReadingProvider defaultSurahId={chapters?.[0]?.id}>
+            <QuranReadingProvider defaultSurahId={surahId ? parseInt(surahId): chapters?.[0]?.id}>
                 <div className="bg-secondary w-full h-full p-3 md:p-5">
                     <div className="flex flex-col lg:flex-row w-full max-w-7xl gap-3 md:gap-5 mx-auto h-full">
                         <div className="w-fit">
@@ -25,4 +27,5 @@ export default async function ReciteQuranLayout({ children }: {children: React.R
     )
 }
 
+// this page is forced dynamic to build the docker image without backing the env variables 
 export const dynamic = 'force-dynamic';

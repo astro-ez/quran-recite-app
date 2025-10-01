@@ -27,7 +27,7 @@ export function ReciteSidebar({ chapters: data } : { chapters: Surah[]}) {
 
     return (
         <aside 
-            className="relative flex flex-col bg-secondary-background h-[80%] rounded-xl p-4 justify-between w-full max-w-md overflow-hidden"
+            className="relative flex flex-col bg-secondary-background max-h-[600px] rounded-xl p-4 justify-between w-full overflow-hidden"
             role="complementary"
             aria-label="Recitation navigation sidebar"
         >
