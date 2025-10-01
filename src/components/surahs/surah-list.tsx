@@ -30,7 +30,7 @@ export function SurahList({surahs}: {surahs: Surah[]}) {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 w-full h-full gap-5">
                 {filteredSurahs.map((surah) => (
-                    <SurahCard key={surah.id} data={surah} isSelected={surah.id === 1}/>
+                    <SurahCard key={surah.id} data={surah} />
                 ))}
             </div>
         </div>

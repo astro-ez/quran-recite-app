@@ -27,19 +27,16 @@ export function ReciteSidebar({ chapters: data } : { chapters: Surah[]}) {
 
     return (
         <aside 
-            className="relative flex flex-col bg-secondary-background max-h-[600px] rounded-xl p-4 justify-between w-full overflow-hidden"
+            className="relative flex flex-col bg-secondary-background h-full max-h-[600px] rounded-xl p-4 justify-between w-full overflow-hidden"
             role="complementary"
             aria-label="Recitation navigation sidebar"
         >
             <div className="flex flex-col lg:flex-row gap-4 w-full h-full">
-                <section className="flex-1 flex flex-col min-w-0">
-                    <header className="mb-3">
-                        <h2 className="text-xs font-semibold text-foreground uppercase tracking-wide">
-                            Select Surah
-                        </h2>
-                    </header>
-                    
-                    <div className="flex-1 overflow-y-auto no-scrollbar space-y-1 pr-1 max-h-48 lg:max-h-none">
+                <section className="flex-1 flex flex-col overflow-y-auto">
+                    <h2 className="mb-3 text-xs font-semibold text-foreground uppercase tracking-wide">
+                        Select Surah
+                    </h2>
+                    <div className="flex-1 overflow-y-auto no-scrollbar space-y-1 pr-1 max-h-[60%]">
                         {data?.length ? (
                             data.map((surah) => (
                                 <SurahCardListMode 
@@ -59,14 +56,12 @@ export function ReciteSidebar({ chapters: data } : { chapters: Surah[]}) {
                 </section>
 
                 <section className="flex flex-col min-w-0">
-                    <header className="mb-3">
-                        <h2 className="text-xs font-semibold text-foreground uppercase tracking-wide">
-                            Select Verse
-                        </h2>
-                    </header>
+                    <h2 className="text-xs mb-3 font-semibold text-foreground uppercase tracking-wide">
+                        Select Verse
+                    </h2>
                     
-                    <div className="flex-1 overflow-y-auto no-scrollbar max-h-48 lg:max-h-none">
-                        <div className="gap-1 flex flex-col">
+                    <div className="flex-1 overflow-y-auto space-y-1 max-h-[60%]">
+                        <div className="gap-1 flex flex-col pr-1">
                             {verseNumbers.map((verse) => (
                                 <Button 
                                     key={verse}
@@ -85,8 +80,6 @@ export function ReciteSidebar({ chapters: data } : { chapters: Surah[]}) {
                         </div>
                     </div>
                 </section>
-            </div>
-            <div className="mt-4 lg:mt-0">
                 <ReciterAudio />
             </div>
         </aside>
